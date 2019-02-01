@@ -1,0 +1,1651 @@
+unit Unit2;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, jpeg, ExtCtrls, ImgList, pngimage, StdCtrls, Unit1;
+
+
+type
+  TForm2 = class(TForm)
+    Image1: TImage;
+    ImageList1: TImageList;
+    Image2: TImage;
+    Image3: TImage;
+    Image4: TImage;
+    Image5: TImage;
+    Image6: TImage;
+    Image7: TImage;
+    Image8: TImage;
+    Image9: TImage;
+    Image10: TImage;
+    Image11: TImage;
+    Image12: TImage;
+    Image13: TImage;
+    Image14: TImage;
+    Image15: TImage;
+    Image16: TImage;
+    Image17: TImage;
+    Image18: TImage;
+    Image19: TImage;
+    Image20: TImage;
+    ImageList2: TImageList;
+    Image21: TImage;
+    procedure Button1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure Image2Click(Sender: TObject);
+    procedure Image14Click(Sender: TObject);
+    procedure Image3Click(Sender: TObject);
+    procedure Image4Click(Sender: TObject);
+    procedure Image5Click(Sender: TObject);
+    procedure Image6Click(Sender: TObject);
+    procedure Image20Click(Sender: TObject);
+    procedure Image19Click(Sender: TObject);
+    procedure Image18Click(Sender: TObject);
+    procedure Image17Click(Sender: TObject);
+    procedure Image16Click(Sender: TObject);
+    procedure Image13Click(Sender: TObject);
+    procedure Image11Click(Sender: TObject);
+    procedure Image12Click(Sender: TObject);
+    procedure Image15Click(Sender: TObject);
+    procedure Image10Click(Sender: TObject);
+    procedure Image8Click(Sender: TObject);
+    procedure Image9Click(Sender: TObject);
+    procedure checkifend;
+    procedure startgame;
+    procedure firstmove;
+    procedure check11;
+    procedure check12;
+    procedure check13;
+    procedure check21;
+    procedure check22;
+    procedure check23;
+    procedure check31;
+    procedure check32;
+    procedure check33;
+    procedure Image10MouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Image7Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Image21Click(Sender: TObject);
+
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form2: TForm2;
+  Grid:array [1..3,1..3] of TCard;           //The variable for the grid
+  x:integer;			//x is used as a temporary integer – its main use is with the randomisation function in drawing out cards and determining the first move 
+  i:integer;
+  BlueHand,RedHand:array[1..5] of TCard;     //The initial Cards drawn up for each player
+  chosenimage:integer;                       //The selected card
+  Emptygrid,EmptyGrid1:integer;                               //Used to initialise the grid by emptying it
+  PlayerTurn:integer;                       //Determines which player's move it is
+  blueend,redend:integer;                   //The amount of cards the players have at the end of the game
+
+
+
+implementation
+
+
+
+{$R *.dfm}
+
+
+
+procedure TForm2.Button1Click(Sender: TObject);
+begin
+application.Terminate;
+end;
+
+procedure TForm2.startgame;
+begin
+  Randomize();
+
+begin
+  for Emptygrid := 1 to 3 do              //Empty out the array
+    for Emptygrid1 := 1 to 3 do
+      begin
+      grid[Emptygrid,Emptygrid1].name:='';
+      grid[Emptygrid,Emptygrid1].Red:=False;
+      grid[Emptygrid,Emptygrid1].LValue:=0;
+      grid[Emptygrid,Emptygrid1].dValue:=0;
+      grid[Emptygrid,Emptygrid1].rValue:=0;
+      grid[Emptygrid,Emptygrid1].uValue:=0;
+      end;
+
+end;
+
+grid[1,1].Cardimage:=timage.Create(form2);            //Creates the images for all of the grid squares which will later take their images from the card array
+grid[1,2].Cardimage:=timage.Create(form2);
+grid[1,3].Cardimage:=timage.Create(form2);
+grid[2,1].Cardimage:=timage.Create(form2);
+grid[2,2].Cardimage:=timage.Create(form2);
+grid[2,3].Cardimage:=timage.Create(form2);
+grid[3,1].Cardimage:=timage.Create(form2);
+grid[3,2].Cardimage:=timage.Create(form2);
+grid[3,3].Cardimage:=timage.Create(form2);
+
+{This is where the respective player's cards are randomly taken out. I have commented the first blue card line by line to make it clear - the rest have less extensive comments as they follow a similar template}
+
+
+x:=Random(54);                                                 //Generates a random number to make the cards drawn random
+//BlueCard1
+Imagelist1.GetBitmap(x, Image2.Picture.Bitmap);                //Loads the image for the first blue card from the image list
+if x=Card[x].CardID then                                       //Checks whether the X value aligns with an ID in the Card array (which it always will)
+begin
+Card[x].Cardimage:=timage.Create(form2);                      //Creates the Image so that it can later be assigned to something else
+Card[x].Cardimage.Picture.Bitmap:=Image2.Picture.Bitmap;      //The Card.CardImage defined from the image that has been drawn from the list
+end;
+BlueHand[1]:=Card[x];          //Copies the Card Data from the Card array into Blue Hand 1
+BlueHand[1].Red:=False;        //Sets the Red (whether the card is in possession of red) to false
+
+
+x:=Random(54);
+//BlueCard2
+Imagelist1.GetBitmap(x, Image3.Picture.Bitmap);
+if x=Card[x].CardID then
+begin
+  Card[x].Cardimage:=timage.Create(form2);
+  Card[x].Cardimage.Picture.Bitmap:=Image3.Picture.Bitmap;
+end;
+BlueHand[2]:=Card[x];        //Copies the Card Data from the Card array into Blue Hand 2
+BlueHand[2].Red:=False;
+
+x:=Random(54);
+//BlueCard3
+Imagelist1.GetBitmap(x, Image4.Picture.Bitmap);
+if x=Card[x].CardID then
+begin
+  Card[x].Cardimage:=timage.Create(form2);
+  Card[x].Cardimage.Picture.Bitmap:=Image4.Picture.Bitmap;
+end;
+BlueHand[3]:=Card[x];       //Copies the Card Data from the Card array into Blue Hand 3
+BlueHand[3].Red:=False;
+
+x:=Random(54);
+//BlueCard4
+Imagelist1.GetBitmap(x, Image5.Picture.Bitmap);
+if x=Card[x].CardID then
+begin
+  Card[x].Cardimage:=timage.Create(form2);
+  Card[x].Cardimage.Picture.Bitmap:=Image5.Picture.Bitmap;
+end;
+BlueHand[4]:=Card[x];     //Copies the Card Data from the Card array into Blue Hand 4
+BlueHand[4].Red:=False;
+
+x:=Random(54);
+//BlueCard5
+Imagelist1.GetBitmap(x, Image6.Picture.Bitmap);
+if x=Card[x].CardID then
+begin
+  Card[x].Cardimage:=timage.Create(form2);
+  Card[x].Cardimage.Picture.Bitmap:=Image6.Picture.Bitmap;
+end;
+BlueHand[5]:=Card[x];   //Copies the Card Data from the Card array into Blue Hand 5
+BlueHand[5].Red:=False;
+
+x:=Random(54);
+//RedCard1
+Imagelist2.GetBitmap(x, Image20.Picture.Bitmap);
+if x=Card[x].CardID then
+begin
+  Card[x].Cardimage:=timage.Create(form2);
+  Card[x].Cardimage.Picture.Bitmap:=Image20.Picture.Bitmap;
+end;
+RedHand[1]:=Card[x];   //Copies the Card Data from the Card array into Red Hand 1
+Redhand[1].Red:=True;
+
+x:=Random(54);
+//RedCard2
+Imagelist2.GetBitmap(x, Image19.Picture.Bitmap);
+if x=Card[x].CardID then
+begin
+  Card[x].Cardimage:=timage.Create(form2);
+  Card[x].Cardimage.Picture.Bitmap:=Image19.Picture.Bitmap;
+end;
+RedHand[2]:=Card[x];   //Copies the Card Data from the Card array into Red Hand 2
+Redhand[2].Red:=True;
+
+x:=Random(54);
+//RedCard3
+Imagelist2.GetBitmap(x, Image18.Picture.Bitmap);
+if x=Card[x].CardID then
+begin
+  Card[x].Cardimage:=timage.Create(form2);
+  Card[x].Cardimage.Picture.Bitmap:=Image18.Picture.Bitmap;
+end;
+RedHand[3]:=Card[x];   //Copies the Card Data from the Card array into Red Hand 3
+Redhand[3].Red:=True;
+
+x:=Random(54);
+//RedCard4
+Imagelist2.GetBitmap(x, Image17.Picture.Bitmap);
+if x=Card[x].CardID then
+begin
+  Card[x].Cardimage:=timage.Create(form2);
+  Card[x].Cardimage.Picture.Bitmap:=Image17.Picture.Bitmap;
+end;
+RedHand[4]:=Card[x]; //Copies the Card Data from the Card array into Red Hand 4
+Redhand[4].Red:=True;
+
+x:=Random(54);
+//RedCard5
+Imagelist2.GetBitmap(x, Image16.Picture.Bitmap);
+if x=Card[x].CardID then
+begin
+  Card[x].Cardimage:=timage.Create(form2);
+  Card[x].Cardimage.Picture.Bitmap:=Image16.Picture.Bitmap;
+end;
+RedHand[5]:=Card[x]; //Copies the Card Data from the Card array into Red Hand 5
+Redhand[5].Red:=True;
+end;
+
+procedure TForm2.FormCreate(Sender: TObject);
+begin
+startgame;
+end;
+
+
+
+procedure TForm2.Button3Click(Sender: TObject);
+begin
+startgame;
+form2.Refresh;
+end;
+
+procedure tForm2.checkifend;
+ begin
+  if (grid[1,1].name<>'') and (grid[2,1].name<>'') and (grid[3,1].name<>'') and (grid[1,2].name<>'') and (grid[2,2].name<>'') and (grid[3,2].name<>'') and (grid[1,3].name<>'') and (grid[2,3].name<>'') and (grid[3,3].name<>'') then   //Checks to see if all of the grid squares are filled
+    begin
+      if grid[1,1].Red=true then    //Checks if the Card in grid [1,1] is red
+        redend:=redend+1;           //Adds one to the redend variable
+      if grid[1,2].Red=true then    //Checks if the Card in grid [1,2] is red
+        redend:=redend+1;
+      if grid[1,3].Red=true then    //Checks if the Card in grid [1,3] is red
+        redend:=redend+1;
+      if grid[2,1].Red=true then    //Checks if the Card in grid [2,1] is red
+        redend:=redend+1;
+      if grid[2,2].Red=true then     //Checks if the Card in grid [2,2] is red
+        redend:=redend+1;
+      if grid[2,3].Red=true then      //Checks if the Card in grid [2,3] is red
+        redend:=redend+1;
+      if grid[3,1].Red=true then       //Checks if the Card in grid [3,1] is red
+        redend:=redend+1;
+      if grid[3,2].Red=true then      //Checks if the Card in grid [3,2] is red
+        redend:=redend+1;
+      if grid[3,3].Red=true then      //Checks if the Card in grid [3,1#3] is red
+        redend:=redend+1;
+    end;
+blueend:=9-redend;                   //Determines the ending number of Red Cards by taking away the number of blue cards
+ if blueend>redend then
+ begin
+ showmessage('Game Over! Blue wins!');
+ end
+ else
+ showmessage('Game Over! Red Wins!');
+    end;
+ end;
+
+
+
+
+procedure TForm2.firstmove;       //Determines the first move based on whether an integer draws a remainder from dividing by 2
+  begin
+x:=random(2);                     //Randomly takes a number between 0-1
+if x=1 then                       //If the number is 0.....
+  begin
+    playerturn:=1;                //....Blue player gets the first move
+    showmessage('Blue player has first move!');
+  end
+  else
+  if x<>1 then                   // If the number is 1.....
+  begin
+  playerturn:=0;                //....Red player gets the first move
+  showmessage('Red Player has first move!');
+  end;
+end;
+
+
+procedure TForm2.FormShow(Sender: TObject);
+begin
+firstmove;                   //The first move is shown upon starting the form
+end;
+
+procedure TForm2.Image16Click(Sender: TObject);
+begin
+if playerturn mod 2=0 then        //If red card 5 selected and it his turn accept the move else decline it and show an error message
+begin
+chosenimage:=10;
+end
+else
+showmessage('Wait your turn!');
+end;
+
+procedure TForm2.Image17Click(Sender: TObject);
+begin
+if playerturn mod 2=0 then      //If red card 4 selected and it his turn accept the move else decline it and show an error message
+begin
+chosenimage:=9;
+end
+else
+showmessage('Wait your turn!');
+end;
+
+procedure TForm2.Image18Click(Sender: TObject);
+begin
+if playerturn mod 2=0 then     //If red card 3 selected and it his turn accept the move else decline it and show an error message
+begin
+chosenimage:=8;
+end
+else
+showmessage('Wait your turn!');
+end;
+
+procedure TForm2.Image19Click(Sender: TObject);
+begin
+if playerturn mod 2=0 then  //If red card 2 selected and it his turn accept the move else decline it and show an error message
+begin
+chosenimage:=7;
+end
+else
+showmessage('Wait your turn!');
+end;
+procedure TForm2.Image20Click(Sender: TObject);
+begin
+if playerturn mod 2=0 then  //If red card 1 selected and it his turn accept the move else decline it and show an error message
+begin
+chosenimage:=6;
+end
+else
+showmessage('Wait your turn!');
+end;
+
+
+procedure TForm2.Image21Click(Sender: TObject);
+begin
+application.Terminate;
+end;
+
+procedure TForm2.Image2Click(Sender: TObject);
+begin
+if playerturn mod 2=1 then    //If blue card 1 selected and it his turn accept the move else decline it and show an error message
+begin
+chosenimage:=1;
+end
+else
+showmessage('Wait your turn!');
+end;
+
+procedure TForm2.Image3Click(Sender: TObject);
+begin
+if playerturn mod 2=1 then   //If blue card 2 selected and it his turn accept the move else decline it and show an error message
+begin
+chosenimage:=2;
+end
+else
+showmessage('Wait your turn!');
+end;
+
+procedure TForm2.Image4Click(Sender: TObject);
+begin
+if playerturn mod 2=1 then   //If blue card 3 selected and it his turn accept the move else decline it and show an error message
+begin
+chosenimage:=3;
+end
+else
+showmessage('Wait your turn!');
+end;
+
+procedure TForm2.Image5Click(Sender: TObject);
+begin
+if playerturn mod 2=1 then   //If blue card 4 selected and it his turn accept the move else decline it and show an error message
+begin
+chosenimage:=4;
+end
+else
+showmessage('Wait your turn!');
+end;
+
+procedure TForm2.Image6Click(Sender: TObject);
+begin
+if playerturn mod 2=1 then  //If blue card 5 selected and it his turn accept the move else decline it and show an error message
+begin
+chosenimage:=5;
+end
+else
+showmessage('Wait your turn!');
+end;
+
+{This procedure is simply to place a card down onto the grid. The first part of it has been commented line by line but they all follow a similar template like such:
+if the grid square is empty
+if the chosenimage=x
+then set the grid square to assume the values attributed to card[x] (Card[x] derived from chosen image]
+delete the image in the player's hand so it can no longer be used
+Load the image into the grid location
+
+}
+
+procedure TForm2.Image10Click(Sender: TObject);
+begin
+  if grid[3,2].name='' then  //Checks if the grid square [3,2] is empty
+begin
+if chosenimage=1 then       //Checks if the picked card is the first blue one
+begin
+Grid[3,2]:=BlueHand[1];    //Sets the Grid[3,2] record to assume the values of the Blue Card 1
+image2.Destroy;            //Gets rid of the image of the card in the player's hand
+end
+else
+if chosenimage=2 then
+begin
+Grid[3,2]:=BlueHand[2];
+image3.Destroy;
+end
+else
+if chosenimage=3 then
+begin
+Grid[3,2]:=BlueHand[3];
+image4.Destroy
+
+end
+else
+if chosenimage=4 then
+begin
+Grid[3,2]:=BlueHand[4];
+image5.Destroy
+
+end
+else
+if chosenimage=5 then
+begin
+Grid[3,2]:=BlueHand[5];
+image6.Destroy
+
+end
+else
+if chosenimage=6 then
+begin
+Grid[3,2]:=RedHand[1];
+image20.Destroy;
+
+end
+else
+if chosenimage=7 then
+begin
+Grid[3,2]:=RedHand[2];
+image19.Destroy;
+
+end
+else
+if chosenimage=8 then
+begin
+Grid[3,2]:=RedHand[3];
+image18.Destroy;
+
+end
+else
+if chosenimage=9 then
+begin
+Grid[3,2]:=RedHand[4];
+image17.Destroy;
+
+end
+else
+if chosenimage=10 then
+begin
+grid[3,2]:=Redhand[5];
+image16.Destroy;
+end;
+
+Image10.Picture.Bitmap:=Grid[3,2].cardimage.Picture.Bitmap;   //Loads the image for the part of the grid from the according Grid array's image
+  chosenimage:=0;                                             //Reset's the selected card
+    PlayerTurn:=PlayerTurn+1;                                 //Adds one to the player turn - i
+    check32;   //If the image on [3,2] is clicked do the calculations. If there is no card then nothing will happen as all of the variables in the grid array are set to 0.
+
+
+end
+else
+showmessage('There is already a card there!');               //If the grid location is not empty then tell then send a message saying that there is already a card there
+end;
+
+procedure tForm2.check32;             //Calculations when a card is placed on grid square [3,2]
+begin
+begin
+if grid[2,2].name<>'' then           //If [2,2] is not empty
+begin
+if (grid[2,2].RValue<grid[3,2].LValue) and (grid[2,2].Red<>grid[3,2].Red) then  //Check if [2,2]'s right value is smaller than [3,2]'s left value as well as not being in the same possession
+begin
+  grid[2,2].Red:=grid[3,2].Red; //If it is then change the possession of [2,2] to the same as [3,2]
+end;
+
+if grid[2,2].Red=true then     //If [2,2] is now red then
+  begin
+  Imagelist2.GetBitmap(grid[2,2].cardid, image15.Picture.Bitmap);   //Use Cardid as a pointer in the red cards image list and draw out the card
+  form2.Refresh;              //Form refreshes to display correct image
+  end
+else
+if grid[1,1].red=false then     //If [2,2] is now blue then
+  Imagelist1.GetBitmap(grid[2,2].cardid, image15.Picture.Bitmap);  //Use Cardid as a pointer in the red cards image list and draw out the card
+  form2.Refresh;             //Form refreshes to display correct image
+end;
+end;
+
+begin
+if grid[3,1].name<>'' then   //Checks if the grid square [3,1] is empty
+begin
+if (grid[3,1].UValue<grid[3,2].DValue) and (grid[3,2].Red<>grid[3,1].Red) then  //Checks if [3,1]'s up value is smaller than [3,2]'s down value and they are not of the same possession
+begin
+  grid[3,1].Red:=grid[3,2].Red; //If they are then the red possession changes to the same as [3,2]
+end;
+
+if grid[3,1].Red=true then     //If the card is red
+  begin
+  Imagelist2.GetBitmap(grid[3,1].cardid, image9.Picture.Bitmap); //Use Cardid as a pointer in the red cards image list and draw out the card
+  form2.Refresh;                                                 //Updates the form
+  end
+else
+if grid[1,2].red=false then                                      //If the card is bleu
+  Imagelist1.GetBitmap(grid[3,1].cardid, image9.Picture.Bitmap); //Use Cardid as a pointer in the blue cards image list and draw out the card
+  form2.Refresh;                                                 //Upodate the form
+end;
+end;
+
+begin
+if grid[3,3].name<>'' then                                       //If [3,3] is empty
+begin
+if (grid[3,3].DValue<grid[3,2].UValue) and (grid[3,2].Red<>grid[3,3].Red) then //If the down value of [3,3] is smaller than the up value of [3,2] and they are not of the same possession then..
+begin
+  grid[3,3].Red:=grid[3,2].Red;         //Change the possession of [3,3] to the same of [3,2]
+end;
+
+if grid[3,3].Red=true then             //If [3,3] is red then
+  begin
+  Imagelist2.GetBitmap(grid[3,3].cardid, image11.Picture.Bitmap);  //Use Cardid as a pointer in the red cards image list and draw out the card
+  form2.Refresh;                                                   //Update form
+  end
+else
+if grid[3,3].red=false then
+  Imagelist1.GetBitmap(grid[3,3].cardid, image11.Picture.Bitmap);  //Use Cardid as a pointer in the blue cards image list and draw out the card
+  form2.Refresh;                                                   //Update form
+end;
+end;
+  checkifend;                                                     //Check to see whether this was the last move of the game
+end;
+
+procedure TForm2.Image10MouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  check32;   //If the image on [3,2] is clicked do the calculations. If there is no card then nothing will happen as all of the variables in the grid array are set to 0.
+end;
+
+
+procedure TForm2.Image11Click(Sender: TObject);  //Placing an image on [3,3]
+begin
+  if grid[3,3].name='' then
+begin
+if chosenimage=1 then
+begin
+  grid[3,3]:=BlueHand[1];
+  image2.Destroy;
+end
+else
+if chosenimage=2 then
+begin
+  grid[3,3]:=BlueHand[2];
+    image3.Destroy;
+end
+else
+if chosenimage=3 then
+begin
+  grid[3,3]:=BlueHand[3];
+    image4.Destroy;
+end
+else
+if chosenimage=4 then
+begin
+  grid[3,3]:=BlueHand[4];
+    image5.Destroy;
+end
+else
+if chosenimage=5 then
+begin
+  grid[3,3]:=BlueHand[5];
+    image6.Destroy;
+end
+else
+if chosenimage=6 then
+begin
+  grid[3,3]:=RedHand[1];
+    image20.Destroy;
+end
+else
+if chosenimage=7 then
+begin
+  grid[3,3]:=RedHand[2];
+    image19.Destroy;
+end
+else
+if chosenimage=8 then
+begin
+  grid[3,3]:=RedHand[3];
+    image18.Destroy;
+end
+else
+if chosenimage=9 then
+begin
+  grid[3,3]:=RedHand[4];
+    image17.Destroy;
+end
+else
+if chosenimage=10 then
+begin
+  grid[3,3]:=RedHand[5];
+    image16.Destroy;
+end;
+  Image11.Picture.Bitmap:=Grid[3,3].cardimage.Picture.Bitmap;
+    chosenimage:=0;
+      PlayerTurn:=PlayerTurn+1;
+        check33;
+end
+else
+showmessage('There is already a card there!');
+end;
+
+procedure tForm2.check33;  //Calulations when Card is placed on [3,3]
+begin
+begin
+if grid[2,3].name<>'' then  //Checks if anything happens to [2,3]
+begin
+if (grid[2,3].RValue<grid[3,3].LValue) and (grid[2,3].Red<>grid[3,3].Red) then
+begin
+  grid[2,3].Red:=grid[3,3].Red;
+end;
+
+if grid[2,3].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[2,3].cardid, image13.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[2,3].red=false then
+  Imagelist1.GetBitmap(grid[2,3].cardid, image13.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+
+begin
+if grid[3,2].name<>'' then      //Checks if anything happens to [3,2]
+begin
+if (grid[3,2].UValue<grid[3,3].DValue) and (grid[3,2].Red<>grid[3,3].Red) then
+begin
+  grid[3,2].Red:=grid[3,3].Red;
+end;
+
+if grid[3,2].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[3,2].cardid, image10.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[3,2].red=false then
+  Imagelist1.GetBitmap(grid[3,2].cardid, image10.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+  checkifend;
+end;
+
+procedure TForm2.Image12Click(Sender: TObject);  //Placing a card on grid[1,2]
+begin
+  if grid[1,2].name='' then
+begin
+if chosenimage=1 then
+begin
+  grid[1,2]:=BlueHand[1];
+    image2.Destroy;
+
+end
+else
+if chosenimage=2 then
+begin
+  grid[1,2]:=BlueHand[2];
+    image3.Destroy;
+
+end
+else
+if chosenimage=3 then
+begin
+  grid[1,2]:=BlueHand[3];
+    image4.Destroy;
+
+end
+else
+if chosenimage=4 then
+begin
+  grid[1,2]:=BlueHand[4];
+    image5.Destroy;
+end
+else
+if chosenimage=5 then
+begin
+  grid[1,2]:=BlueHand[5];
+    image6.Destroy;
+end
+else
+if chosenimage=6 then
+begin
+  grid[1,2]:=RedHand[1];
+    image20.Destroy;
+end
+else
+if chosenimage=7 then
+begin
+  grid[1,2]:=RedHand[2];
+    image19.Destroy;
+end
+else
+if chosenimage=8 then
+begin
+  grid[1,2]:=RedHand[3];
+    image18.Destroy;
+end
+else
+if chosenimage=9 then
+begin
+  grid[1,2]:=RedHand[4];
+    image17.Destroy;
+end
+else
+if chosenimage=10 then
+begin
+  grid[1,2]:=RedHand[5];
+  image16.Destroy;
+end;
+  Image12.Picture.Bitmap:=Grid[1,2].Cardimage.picture.bitmap;
+    chosenimage:=0;
+      PlayerTurn:=PlayerTurn+1;
+        check12;
+
+end
+else
+showmessage('There is already a card there!');
+end;
+
+procedure tForm2.check12;  //Calculations when a card is placed on grid [1,2]
+begin
+begin
+begin
+if grid[1,1].name<>'' then
+begin
+if (grid[1,1].UValue<grid[1,2].DValue) and (grid[1,2].Red<>grid[1,1].Red) then    //Checks if anything happens to [1,1]
+begin
+  grid[1,1].Red:=grid[1,2].Red;
+end;
+
+if grid[1,1].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[1,1].cardid, image7.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[1,1].red=false then
+  Imagelist1.GetBitmap(grid[1,1].cardid, image7.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+
+begin
+if grid[2,2].name<>'' then
+begin
+if (grid[2,2].LValue<grid[1,2].RValue) and (grid[2,2].Red<>grid[1,2].Red) then       //Checks if anything happens to [1,2]
+begin
+  grid[2,2].Red:=grid[1,2].Red;
+end;
+
+if grid[2,2].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[2,2].cardid, image15.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[1,2].red=false then
+  Imagelist1.GetBitmap(grid[2,2].cardid, image15.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+
+begin
+if grid[1,3].name<>'' then
+begin
+if (grid[1,3].DValue<grid[1,2].UValue) and (grid[1,3].Red<>grid[1,2].Red) then              //Checks if anything happens to [1,3]
+begin
+  grid[1,3].Red:=grid[1,2].Red;
+end;
+
+if grid[1,3].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[1,3].cardid, image14.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[3,1].red=false then
+  Imagelist1.GetBitmap(grid[1,3].cardid, image14.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+  checkifend;
+end;
+end;
+
+procedure TForm2.Image13Click(Sender: TObject);           //Placing a card on [2,3]
+begin
+  if grid[2,3].name='' then
+begin
+if chosenimage=1 then
+begin
+  grid[2,3]:=Bluehand[1];
+  image2.Destroy;
+end
+else
+if chosenimage=2 then
+begin
+  grid[2,3]:=Bluehand[2];
+  image3.Destroy;
+
+end
+else
+if chosenimage=3 then
+begin
+  grid[2,3]:=Bluehand[3];
+  image4.Destroy;
+
+end
+else
+if chosenimage=4 then
+begin
+  grid[2,3]:=Bluehand[4];
+  image5.Destroy;
+
+end
+else
+if chosenimage=5 then
+begin
+  grid[2,3]:=Bluehand[5];
+  image6.Destroy;
+
+end
+else
+if chosenimage=6 then
+begin
+  grid[2,3]:=Redhand[1];
+  image20.Destroy;
+
+end
+else
+if chosenimage=7 then
+begin
+  grid[2,3]:=Redhand[2];
+  image19.Destroy;
+end
+else
+if chosenimage=8 then
+begin
+  grid[2,3]:=Redhand[3];
+  image18.Destroy;
+
+end
+else
+if chosenimage=9 then
+begin
+  grid[2,3]:=Redhand[4];
+  image17.Destroy;
+
+end
+else
+if chosenimage=10 then
+begin
+  grid[2,3]:=Redhand[5];
+  image16.Destroy;
+
+end;
+  Image13.Picture.Bitmap:=Grid[2,3].cardimage.Picture.Bitmap;
+    chosenimage:=0;
+      PlayerTurn:=PlayerTurn+1;
+      check23;
+
+end
+else
+showmessage('There is already a card there!');
+end;
+
+procedure tForm2.check23;             //Calculations when card placed on [2,3]
+begin
+begin
+if grid[1,3].name<>'' then
+begin
+if (grid[1,3].RValue<grid[2,3].LValue) and (grid[2,3].Red<>grid[1,3].Red) then    //Checks if anything happens to [1,3]
+begin
+  grid[1,3].Red:=grid[2,3].Red;
+end;
+
+if grid[1,3].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[1,3].cardid, image14.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[1,3].red=false then
+  Imagelist1.GetBitmap(grid[1,3].cardid, image14.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+
+begin
+if grid[2,2].name<>'' then
+begin
+if (grid[2,2].UValue<grid[2,3].DValue) and (grid[2,2].Red<>grid[2,3].Red) then                //Checks if anything happens to [2,2]
+begin
+  grid[2,2].Red:=grid[2,3].Red;
+end;
+
+if grid[2,2].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[2,2].cardid, image15.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[1,2].red=false then
+  Imagelist1.GetBitmap(grid[2,2].cardid, image15.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+
+begin
+if grid[3,3].name<>'' then
+begin
+if (grid[3,3].LValue<grid[2,3].RValue) and (grid[2,3].Red<>grid[3,3].Red) then                   //Checks if anything happens to [3,3]
+begin
+  grid[3,3].Red:=grid[2,3].Red;
+end;
+
+if grid[3,3].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[3,3].cardid, image11.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[3,3].red=false then
+  Imagelist1.GetBitmap(grid[3,3].cardid, image11.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+  checkifend;
+end;
+
+procedure TForm2.Image14Click(Sender: TObject);                                        //Placing a card on [1,3]
+begin
+  if grid[1,3].name='' then
+begin
+if chosenimage=1 then
+Begin
+  Grid[1,3]:=BlueHand[1];
+  image2.Destroy;
+End
+else
+if chosenimage=2 then
+Begin
+  Grid[1,3]:=BlueHand[2];
+  image3.Destroy;
+End
+else
+if chosenimage=3 then
+Begin
+  Grid[1,3]:=BlueHand[3];
+  image4.Destroy;
+End
+else
+if chosenimage=4 then
+Begin
+  Grid[1,3]:=BlueHand[4];
+  image5.Destroy;
+End
+else
+if chosenimage=5 then
+Begin
+  Grid[1,3]:=BlueHand[5];
+  image6.Destroy;
+End
+else
+if chosenimage=6 then
+Begin
+  Grid[1,3]:=RedHand[1];
+  image20.Destroy;
+End
+else
+if chosenimage=7 then
+Begin
+  Grid[1,3]:=RedHand[2];
+  image19.Destroy;
+End
+else
+if chosenimage=8 then
+Begin
+  Grid[1,3]:=RedHand[3];
+  image18.Destroy;
+End
+else
+if chosenimage=9 then
+Begin
+  Grid[1,3]:=RedHand[4];
+  image17.Destroy;
+  End
+else
+if chosenimage=10 then
+Begin
+  Grid[1,3]:=RedHand[5];
+  image16.Destroy;
+End;
+  Image14.Picture.Bitmap:=Grid[1,3].cardimage.Picture.Bitmap;
+    chosenimage:=0;
+      PlayerTurn:=PlayerTurn+1;
+        check13;
+
+end
+else
+showmessage('There is already a card there! ');
+end;
+
+procedure tForm2.check13;     //Calculations when a card placed on [1,3]
+begin
+begin
+if grid[2,3].name<>'' then
+begin
+if (grid[2,3].LValue<grid[1,3].RValue) and (grid[1,3].Red<>grid[2,3].Red) then        //Checks if anything happens to [2,3]
+begin
+  grid[2,3].Red:=grid[1,3].Red;
+end;
+
+if grid[2,3].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[2,3].cardid, image13.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[2,1].red=false then
+  Imagelist1.GetBitmap(grid[2,3].cardid, image13.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+
+begin
+if grid[1,2].name<>'' then
+begin
+if (grid[1,2].UValue<grid[1,3].DValue) and (grid[1,3].Red<>grid[1,2].Red) then                      //Checks if anything happens to [1,2]
+begin
+  grid[1,2].Red:=grid[1,3].Red;
+end;
+
+if grid[1,2].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[1,2].cardid, image12.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[1,2].red=false then
+  Imagelist1.GetBitmap(grid[1,2].cardid, image12.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+  checkifend;
+end;
+
+procedure TForm2.Image15Click(Sender: TObject);                                  //Placing a card on [2,2]
+begin
+  if grid[2,2].name='' then
+begin
+if chosenimage=1 then
+begin
+  grid[2,2]:=BlueHand[1];
+    image2.Destroy;
+
+end
+else
+if chosenimage=2 then
+begin
+  grid[2,2]:=BlueHand[2];
+    image3.Destroy;
+
+end
+else
+if chosenimage=3 then
+begin
+  grid[2,2]:=BlueHand[3];
+    image4.Destroy;
+
+end
+else
+if chosenimage=4 then
+begin
+  grid[2,2]:=BlueHand[4];
+    image5.Destroy;
+
+end
+else
+if chosenimage=5 then
+begin
+  grid[2,2]:=BlueHand[5];
+    image6.Destroy;
+
+end
+else
+if chosenimage=6 then
+begin
+  grid[2,2]:=RedHand[1];
+    image20.Destroy;
+
+end
+else
+if chosenimage=7 then
+begin
+  grid[2,2]:=RedHand[2];
+    image19.Destroy;
+
+end
+else
+if chosenimage=8 then
+begin
+  grid[2,2]:=RedHand[3];
+    image18.Destroy;
+
+end
+else
+if chosenimage=9 then
+begin
+  grid[2,2]:=RedHand[4];
+    image17.Destroy;
+
+end
+else
+if chosenimage=10 then
+begin
+  grid[2,2]:=RedHand[5];
+    image16.Destroy;
+end;
+  Image15.Picture.Bitmap:=Grid[2,2].cardimage.Picture.Bitmap;
+    chosenimage:=0;
+      PlayerTurn:=PlayerTurn+1;
+      check22;
+
+end
+else
+showmessage('There is already a card there!');
+end;
+
+
+procedure tForm2.check22;                                                          //Calculations when card placed on [2,2]
+begin
+begin
+if grid[1,2].name<>'' then
+begin
+if (grid[1,2].RValue<grid[2,2].LValue) and (grid[2,2].Red<>grid[1,2].Red) then       //Checks if anything happens to [1,2]
+begin
+  grid[1,2].Red:=grid[2,2].Red;
+end;
+
+if grid[1,2].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[1,2].cardid, image12.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[1,2].red=false then
+  Imagelist1.GetBitmap(grid[1,2].cardid, image12.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+
+begin
+if grid[2,3].name<>'' then
+begin
+if (grid[2,3].DValue<grid[2,2].UValue) and (grid[2,2].Red<>grid[2,3].Red) then           //Checks if anything happens to [2,3]
+begin
+  grid[2,3].Red:=grid[2,2].Red;
+end;
+
+if grid[2,3].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[2,3].cardid, image13.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[2,3].red=false then
+  Imagelist1.GetBitmap(grid[2,3].cardid, image13.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+
+begin
+if grid[3,2].name<>'' then
+begin
+if (grid[3,2].LValue<grid[2,2].RValue) and (grid[2,2].Red<>grid[3,2].Red) then           //Checks if anything happens to [3,2]
+begin
+  grid[3,2].Red:=grid[2,2].Red;
+end;
+
+if grid[3,2].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[3,2].cardid, image10.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[3,2].red=false then
+  Imagelist1.GetBitmap(grid[3,2].cardid, image10.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+
+begin
+if grid[2,1].name<>'' then
+begin
+if (grid[2,1].UValue<grid[2,2].DValue) and (grid[2,2].Red<>grid[2,1].Red) then         //Checks if anything happens to [2,1]
+begin
+  grid[2,1].Red:=grid[2,2].Red;
+end;
+
+if grid[2,1].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[2,1].cardid, image8.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[2,1].red=false then
+  Imagelist1.GetBitmap(grid[2,1].cardid, image8.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+  checkifend;
+end;
+
+procedure TForm2.Image7Click(Sender: TObject);                  //Placing a card on [1,1]
+begin
+  if grid[1,1].name='' then
+begin
+if (chosenimage=1)then
+begin
+  grid[1,1]:=BlueHand[1];
+    image2.Destroy;
+
+end
+else
+if (chosenimage=2)  then
+begin
+  grid[1,1]:=BlueHand[2];
+    image3.Destroy;
+
+end
+else
+if (chosenimage=3) then
+begin
+  grid[1,1]:=BlueHand[3];
+    image4.Destroy;
+
+end
+else
+if (chosenimage=4) then
+begin
+  grid[1,1]:=BlueHand[4];
+    image5.Destroy;
+end
+else
+if (chosenimage=5)then
+begin
+  grid[1,1]:=BlueHand[5];
+    image6.Destroy;
+end
+else
+if (chosenimage=6) then
+begin
+  grid[1,1]:=RedHand[1];
+    image20.Destroy;
+end
+else
+if (chosenimage=7) then
+begin
+  grid[1,1]:=RedHand[2];
+    image19.Destroy;
+end
+else
+if (chosenimage=8) then
+begin
+  grid[1,1]:=RedHand[3];
+    image18.Destroy;
+end
+else
+if (chosenimage=9) then
+begin
+  grid[1,1]:=RedHand[4];
+    image17.Destroy;
+end
+else
+if (chosenimage=10) then
+begin
+  grid[1,1]:=RedHand[5];
+  image16.Destroy;
+end;
+  Image7.Picture.Bitmap:=Grid[1,1].Cardimage.picture.bitmap;       //Takes the image of the card and places it on the grid
+  chosenimage:=0;
+  PlayerTurn:=PlayerTurn+1;
+   check11;
+end
+else
+showmessage('There is already a card there!');
+end;
+
+
+
+
+procedure tForm2.check11;
+begin
+  begin
+if grid[2,1].name<>'' then                // Checks to see if the adjacent grid square is empty or not
+begin
+if (grid[2,1].LValue<grid[1,1].RValue) and (grid[2,1].Red<>grid[1,1].Red) then  // If [1,1]'s right value is higher than [2,1]'s left and they are not of the same colour then...
+begin
+  grid[2,1].Red:=grid[1,1].Red;     // Possession of [2,1] becomes the same of [1,1]
+end;
+
+if grid[2,1].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[2,1].cardid, image8.Picture.Bitmap);    //If the card is red then use the red image
+  form2.Refresh;
+  end
+else
+if grid[2,1].red=false then
+  Imagelist1.GetBitmap(grid[2,1].cardid, image8.Picture.Bitmap);   //If the card is blue then use the blue image
+  form2.Refresh;                                                    //Refreshes the form
+end;
+end;
+
+begin
+if grid[1,2].name<>'' then             //Checks to see if Card to the top of [1,1] is empty
+begin
+if (grid[1,2].DValue<grid[1,1].UValue) and (grid[1,2].Red<>grid[1,1].Red) then       //If the Up Value on [1,1] is higher
+begin
+  grid[1,2].Red:=grid[1,1].Red;
+end;
+
+if grid[1,2].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[1,2].cardid, image12.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[1,2].red=false then
+  Imagelist1.GetBitmap(grid[1,2].cardid, image12.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+  checkifend;
+end;
+
+procedure TForm2.Image8Click(Sender: TObject);           //Placing a card on [2,1]
+begin
+  if grid[2,1].name='' then
+begin
+if chosenimage=1 then
+begin
+Grid[2,1]:=BlueHand[1];
+   image2.Destroy;
+end
+else
+if chosenimage=2 then
+begin
+Grid[2,1]:=BlueHand[2];
+  image3.Destroy;
+end
+else
+if chosenimage=3 then
+begin
+Grid[2,1]:=BlueHand[3];
+  image4.Destroy;
+end
+else
+if chosenimage=4 then
+begin
+Grid[2,1]:=BlueHand[4];
+  image5.Destroy;
+end
+else
+if chosenimage=5 then
+begin
+Grid[2,1]:=BlueHand[5];
+  image6.Destroy;
+end
+else
+if chosenimage=6 then
+begin
+Grid[2,1]:=RedHand[1];
+  image20.Destroy;
+end
+else
+if chosenimage=7 then
+begin
+Grid[2,1]:=RedHand[2];
+  image19.Destroy;
+end
+else
+if chosenimage=8 then
+begin
+Grid[2,1]:=RedHand[3];
+  image18.Destroy;
+end
+else
+if chosenimage=9 then
+begin
+Grid[2,1]:=RedHand[4];
+  image17.Destroy;
+end
+else
+if chosenimage=10 then
+begin
+Grid[2,1]:=RedHand[5];
+  image16.Destroy;
+end;
+Image8.Picture.Bitmap:=Grid[2,1].cardimage.Picture.Bitmap;
+  chosenimage:=0;
+  PlayerTurn:=PlayerTurn+1;
+end
+else
+showmessage('There is already a card there!');
+end;
+
+
+procedure tForm2.check21;                  //Calculations when card placed on [2,1]
+begin
+begin
+if grid[1,1].name<>'' then
+begin
+if (grid[1,1].RValue<grid[2,1].LValue) and (grid[2,1].Red<>grid[1,1].Red) then  //Checks if anything happens to [1,1]
+begin
+  grid[1,1].Red:=grid[2,1].Red;
+end;
+
+if grid[1,1].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[1,1].cardid, image7.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[1,1].red=false then
+  Imagelist1.GetBitmap(grid[1,1].cardid, image7.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+
+begin
+if grid[2,2].name<>'' then
+begin
+if (grid[2,2].DValue<grid[2,1].UValue) and (grid[2,2].Red<>grid[2,1].Red) then     //Checks if anything happens to [2,2]
+begin
+  grid[2,2].Red:=grid[2,1].Red;
+end;
+
+if grid[2,2].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[2,2].cardid, image15.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[2,2].red=false then
+  Imagelist1.GetBitmap(grid[2,2].cardid, image15.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+
+begin
+if grid[3,1].name<>'' then
+begin
+if (grid[3,1].LValue<grid[2,1].RValue) and (grid[2,1].Red<>grid[3,1].Red) then                   //Checks if anything happens to [3,1]
+begin
+  grid[3,1].Red:=grid[2,1].Red;
+end;
+
+if grid[3,1].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[3,1].cardid, image9.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[3,1].red=false then
+  Imagelist1.GetBitmap(grid[3,1].cardid, image9.Picture.Bitmap);
+  form2.Refresh;
+  check21;
+end;
+end;
+  checkifend;
+end;
+
+procedure TForm2.Image9Click(Sender: TObject);                   //Placing a card  on [3,1]
+begin
+  if grid[3,1].name='' then
+begin
+if chosenimage=1 then
+begin
+  Grid[3,1]:=BlueHand[1];
+    image2.Destroy;
+end
+else
+if chosenimage=2 then
+begin
+  Grid[3,1]:=BlueHand[2];
+    image3.Destroy;
+end
+else
+if chosenimage=3 then
+begin
+  Grid[3,1]:=BlueHand[3];
+    image4.Destroy;
+end
+else
+if chosenimage=4 then
+begin
+  Grid[3,1]:=BlueHand[4];
+    image5.Destroy;
+end
+else
+if chosenimage=5 then
+begin
+  Grid[3,1]:=BlueHand[5];
+    image6.Destroy;
+end
+else
+if chosenimage=6 then
+begin
+  Grid[3,1]:=RedHand[1];
+    image20.Destroy;
+end
+else
+if chosenimage=7 then
+begin
+  Grid[3,1]:=RedHand[2];
+    image19.Destroy;
+end
+else
+if chosenimage=8 then
+begin
+  Grid[3,1]:=RedHand[3];
+    image18.Destroy;
+end
+else
+if chosenimage=9 then
+begin
+  Grid[3,1]:=RedHand[4];
+    image17.Destroy;
+end
+else
+if chosenimage=10 then
+begin
+  Grid[3,1]:=RedHand[5];
+    image16.Destroy;
+end;
+    Image9.Picture.Bitmap:=Grid[3,1].Cardimage.Picture.Bitmap;
+      chosenimage:=0;
+        PlayerTurn:=PlayerTurn+1;
+          check31;
+end
+else
+showmessage('There is already a card there!');
+end;
+
+
+procedure tForm2.check31;                        //Calculations when card placed on [3,1]
+begin
+begin
+if grid[2,1].name<>'' then
+begin
+if (grid[2,1].RValue<grid[3,1].LValue) and (grid[2,1].Red<>grid[3,1].Red) then      //Checks if anything happens to [2,1]
+begin
+  grid[2,1].Red:=grid[3,1].Red;
+end;
+
+if grid[2,1].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[2,1].cardid, image8.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[2,1].red=false then
+  Imagelist1.GetBitmap(grid[2,1].cardid, image8.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+
+begin
+if grid[3,2].name<>'' then
+begin
+if (grid[3,2].DValue<grid[3,1].UValue) and (grid[3,2].Red<>grid[3,1].Red) then              //Checks if anything happens to [3,2]
+begin
+  grid[3,2].Red:=grid[3,1].Red;
+end;
+
+if grid[3,2].Red=true then
+  begin
+  Imagelist2.GetBitmap(grid[3,2].cardid, image10.Picture.Bitmap);
+  form2.Refresh;
+  end
+else
+if grid[3,2].red=false then
+  Imagelist1.GetBitmap(grid[3,2].cardid, image10.Picture.Bitmap);
+  form2.Refresh;
+end;
+end;
+  checkifend;
+end;
+
+end.
