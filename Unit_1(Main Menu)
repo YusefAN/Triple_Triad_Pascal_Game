@@ -1,0 +1,120 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, jpeg, ExtCtrls, Vcl.MPlayer,MMSystem;
+
+type
+
+    TCard=record
+  CardID:integer;
+  name:string;
+  LValue:integer;
+  RValue:integer;
+  UValue:integer;
+  DValue:integer;
+  Cardimage:Timage;
+  Red:boolean;
+  end;
+
+  TForm1 = class(TForm)
+    Image1: TImage;
+    Button3: TButton;
+    MediaPlayer1: TMediaPlayer;
+    Button2: TButton;
+    Button1: TButton;
+    procedure Button1Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure TriadMusic;
+    procedure ReadFromFile;
+    procedure Button2Click(Sender: TObject);
+
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+
+
+var
+  Form1: TForm1;
+  Cardfile:textfile;
+  Card:array [0..54] of TCard;
+  Ptr:integer;
+  TSL:Tstringlist;
+  Cardline:string;
+  i:integer;
+
+
+
+implementation
+
+uses Unit2;
+
+
+
+procedure TForm1.Button1Click(Sender: TObject);    //Closes the main menu and goes to the game :)
+begin
+Form1.Hide;
+Form2.Show;
+end;
+
+Procedure Tform1.ReadFromFile;
+begin
+    TSL:=TStringList.Create;                     //Creates a TStringList
+    AssignFile(CardFile, 'Cards.txt');           //Assigns the Cardfile variable of a text file to the appropriate location
+    Reset(Cardfile);                             //Opens the file for reading
+    Ptr:=-1;                                      //Creates a pointer for the line of the text file
+    while not Eof(Cardfile) do
+      begin
+        Readln(Cardfile, Cardline);
+        TSL.CommaText:= Cardline;                         //Saves a line of Cardfile into a TStringList that is broken up by commas
+        Ptr:=Ptr+1;
+          for i := 0 to TSL.Count-1 do
+            Card[ptr].CardID:=StrtoInt(TSL[1]);           //Breaks up the CardLine and places the values in the appropriate locations of the record
+            Card[ptr].name:=Tsl[2];
+            Card[ptr].UValue:=StrtoInt(TSL[3]);
+            Card[ptr].RValue:=StrtoInt(TSL[4]);
+            Card[ptr].DValue:=StrtoInt(TSL[5]);
+            Card[ptr].LValue:=StrtoInt(TSL[6]);
+      end;
+      CloseFile(Cardfile);                                //Closes the CardFile
+  end;
+
+
+procedure TForm1.TriadMusic;
+begin
+with mediaplayer1 do
+  begin
+mediaplayer1.FileName:='shuffle.mp3';
+mediaplayer1.Open;
+mediaplayer1.Play;
+mediaplayer1.AutoRewind:=true;
+  end;
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+mediaplayer1.Close;
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);     //The Exit button
+begin
+application.Terminate
+end;
+
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  TriadMusic;
+  ReadFromFile;
+end;
+
+
+
+end.
